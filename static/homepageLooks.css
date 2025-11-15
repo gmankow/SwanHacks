@@ -5,13 +5,7 @@
     color: #FFF;
     text-align: center;
 }
-.reroute{
-    margin: auto;
-    background-color: #CCC;
-    padding: 14px 20px;
-    color: #FFF;
-    text-align: center;
-}
+
 .main-menu {
   list-style: none; /* Hides the wittle dots */
   padding: 0;
