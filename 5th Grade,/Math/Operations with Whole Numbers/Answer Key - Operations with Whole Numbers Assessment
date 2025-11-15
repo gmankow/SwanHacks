@@ -1,0 +1,63 @@
+Part A: Multi-Digit Addition
+
+58,492 + 37,806 = 96,298
+
+406,218 + 195,437 = 601,655
+
+Part B: Multi-Digit Subtraction
+
+92,504 − 67,289 = 25,215
+
+703,810 − 248,975 = 454,835
+
+Part C: Multiplication
+
+324 × 27 = 8,748
+(324 × 20 = 6,480; 324 × 7 = 2,268; total = 8,748)
+
+1,406 × 8 = 11,248
+
+Part D: Division
+
+864 ÷ 6 = 144
+
+3,528 ÷ 12 = 294
+
+7,425 ÷ 25 = 297
+(25 × 300 = 7,500; subtract 75 → 25 × 3 = 75)
+
+Part E: Order of Operations
+
+6 × (12 − 7) = 6 × 5 = 30
+
+48 ÷ 6 + 9 = 8 + 9 = 17
+
+(30 + 18) ÷ 6 = 48 ÷ 6 = 8
+
+Part F: Mixed Computation
+
+14,295 − 8,672 = 5,623
+
+508 × 40 = 20,320
+
+18,400 ÷ 50 = 368
+
+Part G: Multi-Step Word Problems
+
+12,480 − 4,965 − 3,807 = 3,708
+(After both shipments, 3,708 boxes remain.)
+
+4,752 ÷ 6 = 792 packs
+
+2,385 ÷ 615 = 3 full days with 540 miles remaining
+(615 × 3 = 1,845; 2,385 − 1,845 = 540)
+
+Part H: Challenge Problems
+
+Multiply by 100, then divide by 10 → effectively multiply by 10.
+Moves digits one place to the left.
+Example: 47 becomes 470.
+
+The student’s reasoning works because dividing both numbers by 10 gives:
+4,000 ÷ 80 = (400 ÷ 8) = 50.
+You’re not “dropping zeros” randomly — you’re dividing the numerator and denominator by the same power of ten.
