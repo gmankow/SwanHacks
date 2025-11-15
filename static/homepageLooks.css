@@ -1,0 +1,82 @@
+.reroute{
+    margin: auto;
+    background-color: #CCC;
+    padding: 14px 20px;
+    color: #FFF;
+    text-align: center;
+}
+.reroute{
+    margin: auto;
+    background-color: #CCC;
+    padding: 14px 20px;
+    color: #FFF;
+    text-align: center;
+}
+.main-menu {
+  list-style: none; /* Hides the wittle dots */
+  padding: 0;
+  margin: 0;
+  background-color: #333;
+  display: flex; /* Makes them go side-by-side! */
+}
+
+/* Style fow the top-wevel items */
+.main-menu > li {
+  /* This is the secwet! It's the 'anchor point' fow its babies! */
+  position: relative; 
+}
+
+/* Style fow all the winks */
+.main-menu a {
+  display: block;
+  padding: 15px 20px;
+  color: white;
+  text-decoration: none;
+}
+
+.main-menu a:hover {
+  background-color: #ff69b4; /* Cute pink! <3 */
+}
+
+/* --- HIDING THE BABIES! --- */
+
+/* Hide *all* submenus by defauwt! */
+.submenu,
+.sub-submenu {
+  display: none;
+  list-style: none;
+  padding: 0;
+  
+  /* This makes them fwoat! */
+  position: absolute; 
+  background-color: #555;
+  min-width: 150px; /* So they're not too skinny! */
+}
+
+/* --- SHOWING THE FIRST WEVEL! (Peek-a-boo! owo) --- */
+
+/* When you hover a '.dropdown' item... */
+.dropdown:hover > .submenu {
+  /* ...show its baby submenu! */
+  display: block;
+  
+  /* Pwace it *below* the parent */
+  top: 100%; 
+  left: 0;
+}
+
+.dropdown-level-2{
+    position: hover;
+}
+
+/* --- SHOWING THE *SECOND* LEVEL! (Mowe magic!) --- */
+
+/* When you hover a '.dwopdown-wevel-2' item... */
+.dropdown-level-2:hover > .sub-submenu {
+  /* ...show its baby submenu! */
+  display: block; 
+  
+  /* Pwace it *to the side* of the parent! */
+  top: 0;
+  left: 100%; 
+}
