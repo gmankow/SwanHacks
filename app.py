@@ -45,7 +45,6 @@ After providing the quiz, ALWAYS ask the user, "Would you like me to generate th
 app = Flask(__name__)
 
 client = OpenAI()
-
 @app.route("/chat", methods=["POST"])
 def chat():
     data = request.get_json()

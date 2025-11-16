@@ -147,7 +147,7 @@
         </div>
 
          <h2>Response:</h2>
-        <div id="result" style="white-space: pre-wrap; color: #FFF; border: 1px solid #ccc; padding: 8px;"></div>
+        <div id="result" style="white-space: pre-wrap; color: black; border: 1px solid #333; padding: 8px;"></div>
 
         <div class="input">
             <textarea id="input" rows="3" cols="50"></textarea><br />
@@ -164,19 +164,16 @@
     <script>
          let chatHistory = [];
 
-        // --- NEW FUNCTION to build the chat UI from history ---
         function updateChatUI() {
             const resultEl = document.getElementById("result");
-            // Clear the chat window
+            
             resultEl.innerHTML = "";
 
-            // Loop through the history and create a message for each
             chatHistory.forEach(message => {
                 const msgEl = document.createElement("div");
                 msgEl.textContent = message.content;
-                msgEl.style.whiteSpace = "pre-wrap"; // Ensure newlines are respected
+                msgEl.style.whiteSpace = "pre-wrap"; 
 
-                // Style the message based on role
                 if (message.role === "user") {
                     msgEl.className = "mb-2 p-3 bg-blue-100 rounded-lg text-right";
                     msgEl.textContent = message.content;
@@ -199,14 +196,11 @@
                 return;
             }
 
-            // 1. Add user's message to history
             chatHistory.push({ "role": "user", "content": message });
-            inputEl.value = ""; // Clear the input
+            inputEl.value = ""; 
 
-            // 2. Immediately update the UI to show the user's new message
             updateChatUI();
 
-            // 3. Add a "Thinking..." indicator to the chat
             const thinkingEl = document.createElement("div");
             thinkingEl.id = "thinking-indicator";
             thinkingEl.textContent = "Thinking...";
@@ -223,17 +217,15 @@
 
                 const data = await res.json();
 
-                // 4. Remove the "Thinking..." indicator
                 document.getElementById("thinking-indicator")?.remove();
 
                 if (data.reply) {
-                    // 5. Push the bot's reply to history
+                    
                     chatHistory.push({ "role": "assistant", "content": data.reply });
                     
-                    // 6. Update the UI again to show the new bot reply
                     updateChatUI();
                 } else if (data.error) {
-                    // Show error in the chat
+                    
                     const errorEl = document.createElement("div");
                     errorEl.textContent = "Error: " + data.error;
                     errorEl.className = "mb-2 p-3 bg-red-100 text-red-700 rounded-lg text-left";
