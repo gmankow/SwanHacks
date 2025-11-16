@@ -145,6 +145,10 @@
         <div class="title">
             <h1>Lesson Plan Bot!</h1>
         </div>
+
+         <h2>Response:</h2>
+        <div id="result" style="white-space: pre-wrap; color: #FFF; border: 1px solid #ccc; padding: 8px;"></div>
+
         <div class="input">
             <textarea id="input" rows="3" cols="50"></textarea><br />
             
@@ -154,47 +158,98 @@
             </div>
         </div>
 
-        <h2>Response:</h2>
-        <div id="result" style="white-space: pre-wrap; color: #FFF; border: 1px solid #ccc; padding: 8px;"></div>
+       
         
 
     <script>
-      async function send() {
-        const inputEl = document.getElementById("input");
-        const resultEl = document.getElementById("result");
-        const message = inputEl.value.trim();
+         let chatHistory = [];
 
-        if (!message) {
-          resultEl.textContent = "Please type something first.";
-          return;
+        // --- NEW FUNCTION to build the chat UI from history ---
+        function updateChatUI() {
+            const resultEl = document.getElementById("result");
+            // Clear the chat window
+            resultEl.innerHTML = "";
+
+            // Loop through the history and create a message for each
+            chatHistory.forEach(message => {
+                const msgEl = document.createElement("div");
+                msgEl.textContent = message.content;
+                msgEl.style.whiteSpace = "pre-wrap"; // Ensure newlines are respected
+
+                // Style the message based on role
+                if (message.role === "user") {
+                    msgEl.className = "mb-2 p-3 bg-blue-100 rounded-lg text-right";
+                    msgEl.textContent = message.content;
+                } else {
+                    msgEl.className = "mb-2 p-3 bg-gray-100 rounded-lg text-left";
+                    msgEl.innerHTML = message.content; 
+                }
+                
+                resultEl.appendChild(msgEl);
+            });
         }
 
-        resultEl.textContent = "Thinking...";
+        async function send() {
+            const inputEl = document.getElementById("input");
+            const resultEl = document.getElementById("result");
+            const message = inputEl.value.trim();
 
-        try {
-          const res = await fetch("/lesson_plan", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ message }),
-          });
+            if (!message) {
+                inputEl.placeholder = "Please type something first.";
+                return;
+            }
 
-          console.log("Status:", res.status);
+            // 1. Add user's message to history
+            chatHistory.push({ "role": "user", "content": message });
+            inputEl.value = ""; // Clear the input
 
-          const data = await res.json();
-          console.log("Data:", data);
+            // 2. Immediately update the UI to show the user's new message
+            updateChatUI();
 
-          if (data.reply) {
-            resultEl.innerHTML = data.reply;
-          } else if (data.error) {
-            resultEl.textContent = "Error: " + data.error;
-          } else {
-            resultEl.textContent = "No reply or error field in response.";
-          }
-        } catch (err) {
-          console.error("Fetch error:", err);
-          resultEl.textContent = "Request failed: " + err;
+            // 3. Add a "Thinking..." indicator to the chat
+            const thinkingEl = document.createElement("div");
+            thinkingEl.id = "thinking-indicator";
+            thinkingEl.textContent = "Thinking...";
+            thinkingEl.className = "mb-2 p-3 bg-gray-100 rounded-lg text-left italic";
+            resultEl.appendChild(thinkingEl);
+            resultEl.scrollTop = resultEl.scrollHeight;
+
+            try {
+                const res = await fetch("/lesson_plan", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ "messages": chatHistory }),
+                });
+
+                const data = await res.json();
+
+                // 4. Remove the "Thinking..." indicator
+                document.getElementById("thinking-indicator")?.remove();
+
+                if (data.reply) {
+                    // 5. Push the bot's reply to history
+                    chatHistory.push({ "role": "assistant", "content": data.reply });
+                    
+                    // 6. Update the UI again to show the new bot reply
+                    updateChatUI();
+                } else if (data.error) {
+                    // Show error in the chat
+                    const errorEl = document.createElement("div");
+                    errorEl.textContent = "Error: " + data.error;
+                    errorEl.className = "mb-2 p-3 bg-red-100 text-red-700 rounded-lg text-left";
+                    resultEl.appendChild(errorEl);
+                } else {
+                    resultEl.textContent = "No reply or error field in response.";
+                }
+            } catch (err) {
+                console.error("Fetch error:", err);
+                document.getElementById("thinking-indicator")?.remove();
+                const errorEl = document.createElement("div");
+                errorEl.textContent = "Request failed: " + err;
+                errorEl.className = "mb-2 p-3 bg-red-100 text-red-700 rounded-lg text-left";
+                resultEl.appendChild(errorEl);
+            }
         }
-      }
     </script>
     </div>
     </body>

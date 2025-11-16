@@ -16,6 +16,31 @@ CURRICULUM_BOT_PROMPT = """
 You are a curriculum-focused assistant designed to help parents plan effective learning experiences for their children. You provide clear, structured lesson plans, hands-on activities, and explanations of challenging concepts so parents can confidently teach. Your responses should always be formatted using simple HTML tags (like <p>, <ul>, <li>, <h2>, etc.) for clarity and readability. Maintain a professional, supportive, and practical tone, offering step-by-step guidance, suggested materials, and age-appropriate approaches. When users ask for teaching help, adapt to the child’s needs, learning style, and age. Keep explanations accessible and accurate while avoiding unnecessary complexity. When information is missing, infer reasonable details to produce a useful plan rather than asking too many clarifying questions.
 """
 
+QUIZ_BOT_PROMPT = """
+You are 'Professor Q,' a friendly, engaging, and brilliant quiz-making assistant.
+Your goal is to help a parent or teacher create a fun and effective quiz for a student.
+
+Your primary rule is to be conversational. DO NOT generate a quiz immediately.
+You MUST first ask questions to gather all the information you need.
+
+Start by asking for:
+1.  The specific **Topic** for the quiz (e.g., "The Solar System," "Adding Fractions," "Ancient Egypt").
+2.  The **Grade Level** of the student (e.g., "3rd Grade").
+3.  The desired **Number of Questions** (e.g., "5 questions").
+4.  The **Type of Questions** (e.g., "multiple choice," "true/false," "short answer," or a mix).
+
+Only after you have all these details, generate the quiz.
+
+When you generate the quiz, you MUST format it using clean HTML:
+- Wrap the entire quiz in a `<div>`.
+- Use an `<h2>` for the quiz title (e.g., "Quiz: The Solar System").
+- Use an `<ol>` for the question list.
+- Use `<li>` for each question.
+- For multiple-choice questions, use a nested `<ul>` for the options (A, B, C, D).
+
+After providing the quiz, ALWAYS ask the user, "Would you like me to generate the answer key for this quiz?"
+"""
+
 # create Flask app and run
 app = Flask(__name__)
 
@@ -61,20 +86,43 @@ def tutor():
 @app.route('/lesson_plan', methods=["POST"])
 def lesson_plan():
     data = request.get_json()
-    topic = data.get("topic", "")
+    messages_from_user = data.get("messages", [])
 
-    if not topic:
+    if not messages_from_user:
         return jsonify({"error": "No topic provided"}), 400
+    
+    messages_to_send = [
+        {"role": "system", "content": CURRICULUM_BOT_PROMPT}
+    ] + messages_from_user
+
 
     completion = client.chat.completions.create(
         model="gpt-5-nano",    
-        messages=[
-            {"role": "system", "content": CURRICULUM_BOT_PROMPT},
-            {"role": "user", "content": topic}],
+        messages=messages_to_send
     )
 
     plan = completion.choices[0].message.content
-    return jsonify({"plan": plan})
+    return jsonify({"reply": plan})
+
+@app.route('/quiz', methods=["POST"])
+def quiz():
+    data = request.get_json()
+    previousQuiz = data.get("messages", [])
+
+    if not previousQuiz:
+        return jsonify({"error": "No topic provided"}), 400
+    
+    message_to_send = [
+        {"role": "system", "content": QUIZ_BOT_PROMPT}
+    ] + previousQuiz
+
+    completion = client.chat.completions.create(
+        model="gpt-5-nano",
+        message=message_to_send
+    )
+
+    plan = completion.choices[0].message.content
+    return jsonify({"reply": plan})
 
 @app.route('/', methods=['POST', 'GET'])
 def home():
