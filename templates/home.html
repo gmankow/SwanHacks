@@ -6,10 +6,6 @@
         <link rel="stylesheet" type="text/css" href="/static/homepageLooks.css">
     </head>
     <body>
-        <div class="reroute">
-            <a href="userInput">HereYouGoCutiePatootie</a>
-        </div>
-    
         <ul class="main-menu">
              <li class="dropdown">
                 <a href="#">First Grade</a>
@@ -143,5 +139,63 @@
                 </ul>
             </li>
         </ul>
+    </body>
+    <body>
+        <div class="MainPage">
+        <div class="title">
+            <h1>Lesson Plan Bot!</h1>
+        </div>
+        <div class="input">
+            <textarea id="input" rows="3" cols="50"></textarea><br />
+            
+            <div class="send">
+                <button onclick="send()">Send</button>
+                <pre id="output"></pre>
+            </div>
+        </div>
+
+        <h2>Response:</h2>
+        <div id="result" style="white-space: pre-wrap; color: #FFF; border: 1px solid #ccc; padding: 8px;"></div>
+        
+
+    <script>
+      async function send() {
+        const inputEl = document.getElementById("input");
+        const resultEl = document.getElementById("result");
+        const message = inputEl.value.trim();
+
+        if (!message) {
+          resultEl.textContent = "Please type something first.";
+          return;
+        }
+
+        resultEl.textContent = "Thinking...";
+
+        try {
+          const res = await fetch("/lesson_plan", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message }),
+          });
+
+          console.log("Status:", res.status);
+
+          const data = await res.json();
+          console.log("Data:", data);
+
+          if (data.reply) {
+            resultEl.innerHTML = data.reply;
+          } else if (data.error) {
+            resultEl.textContent = "Error: " + data.error;
+          } else {
+            resultEl.textContent = "No reply or error field in response.";
+          }
+        } catch (err) {
+          console.error("Fetch error:", err);
+          resultEl.textContent = "Request failed: " + err;
+        }
+      }
+    </script>
+    </div>
     </body>
 </html>

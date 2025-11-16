@@ -1,0 +1,38 @@
+body{
+    background-color: #494949;
+}
+.unitTitles{
+    width: 80%;
+    background-color: #2A2A2A;
+    color: #CCC;
+}
+
+.unitTitles a{
+    color: #CCC;
+    display: block;
+    padding: 15px 20px;
+    text-decoration: none;
+}
+.standardTemplate{
+    border: 1px solid #494949;
+    padding: 0;
+    
+}
+
+.exam{
+    padding: 0;
+    border: 1px solid #494949;
+
+}
+.practiceAssignment{
+  
+    padding: 0;
+    border: 1px solid #494949;
+
+}
+h2{
+    color: #CCC;
+}
+.response{
+    color: #CCC;
+}

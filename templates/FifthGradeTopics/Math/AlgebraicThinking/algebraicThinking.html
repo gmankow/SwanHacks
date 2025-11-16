@@ -6,12 +6,154 @@
         <link rel="stylesheet" type="text/css" href="/static/unitFormats.css">
     </head>
     <body>
-        <div class="reroute">
-            <a href="/math/AlgebraicThinking/Overview">Overview</a>
-            <a href="/math/AlgebraicThinking/KeyAssessments-AlgebraicThinking">Exam</a>
-            <a href="/math/AlgebraicThinking/AlgebraicThinkingAssessment">Exam Key</a>
-            <a href="/math/AlgebraicThinking/AlgebraicThinkingWorksheet">Practice Assignment 1</a>
-            <a href="/math/AlgebraicThinking/AlgebraicThinkingWorksheet2">Practice Assignment 2</a>
+        <div class="unitTitles">
+            <div class="standardTemplate">
+                <a href="/math/AlgebraicThinking/Overview">Overview</a>
+            </div>
+            
+            <div class="exam">
+                <a href="/math/AlgebraicThinking/AlgebraicThinkingAssessment">Exam</a>
+                <button onclick="checkPasswowd()">View Answer Key</button>
+            </div>
+            <div class="practiceAssignment">
+                <a href="/math/AlgebraicThinking/AlgebraicThinkingWorksheet">Practice Assignment 1</a>
+            </div>
+            <div class="practiceAssignment">
+                <a href="/math/AlgebraicThinking/AlgebraicThinkingWorksheet2">Practice Assignment 2</a>
+            </div>
         </div>
+        <select id="worksheet-select">
+            <option value="">-- Select Worksheet --</option>
+            <option value="/math/AlgebraicThinking/AlgebraicThinkingWorksheet">Worksheet 1</option>
+            <option value="/math/AlgebraicThinking/AlgebraicThinkingWorksheet2">Worksheet 2</option>
+        </select>
+
+        <select id="section-select">
+            <option value="">-- Select Section --</option>
+            <option value="A">Section A</option>
+            <option value="B">Section B</option>
+            <option value="C">Section C</option>
+            <option value="D">Section D</option>
+            <option value="E">Section E</option>
+            <option value="F">Section F</option>
+        </select>
+
+        <button id="global-help-btn">Ask Tutor for Help</button>
+
+        <div>
+            <h2>Response:</h2>
+            <div id="result" style="white-space: pre-wrap; color: #FFF; border: 1px solid #ccc; padding: 8px;"></div>
+        </div>
+
+
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+
+            const helpButton = document.getElementById('global-help-btn');
+            const worksheetDropdown = document.getElementById('worksheet-select');
+            const sectionDropdown = document.getElementById('section-select');
+            const resultEl = document.getElementById('result');
+
+            // Make the click handler 'async' to use 'await'
+            helpButton.addEventListener('click', async () => {
+                
+                const fileName = worksheetDropdown.value; // e.g., "worksheet1.html"
+                const sectionClass = sectionDropdown.value;   // e.g., "A"
+
+                if (!fileName || !sectionClass) {
+                    alert("Please select both a worksheet and a section.");
+                    return;
+                }
+
+                resultEl.textContent = "Loading section...";
+
+                try {
+                    // 1. Fetch the HTML file (e.g., 'worksheet1.html')
+                    const response = await fetch(fileName);
+                    if (!response.ok) {
+                        throw new Error(`Could not find file: ${fileName}`);
+                    }
+                    
+                    // 2. Get the file's content as a text string
+                    const htmlText = await response.text();
+
+                    // 3. Parse the HTML string into a temporary document
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(htmlText, 'text/html');
+
+                    // 4. Find the specific div
+                    // This builds a selector like ".section.A"
+                    const selector = `.section.${sectionClass}`;
+                    const sectionElement = doc.querySelector(selector);
+
+                    // 5. Get the text from the div
+                    if (!sectionElement) {
+                        throw new Error(`Could not find section "${selector}" in ${fileName}`);
+                    }
+                    const sectionText = sectionElement.innerText; // This is the content you wanted!
+                    console.log(sectionText)
+
+                    // 6. Send the real text to the bot
+                    let userMessage = "I need help on topics within this section";
+                    resultEl.textContent = "Thinking...";
+                    sendSectionToBot(sectionText, userMessage);
+
+                } catch (err) {
+                    console.error(err);
+                    resultEl.textContent = `Error: ${err.message}`;
+                }
+            });
+        });
+
+
+        // This is your 'sendSectionToBot' function
+        // It's the same as before and doesn't need to change.
+        async function sendSectionToBot(sectionFullText, userMessage) {
+
+            const resultEl = document.getElementById('result');
+
+            try {
+                const res = await fetch("/tutor", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        "question": sectionFullText + userMessage
+                    }),
+                });
+
+                const data = await res.json();
+
+                if (data.answer) {
+                    resultEl.innerHTML = data.answer;
+                } else if (data.error) {
+                    resultEl.textContent = "Error: " + data.error;
+                } else {
+                    resultEl.textContent = "No 'answer' or 'error' field in response.";
+                }
+            } catch (err) {
+                console.error("Fetch error:", err);
+                resultEl.textContent = "Request failed: " + err;
+            }
+        }
+
+        function checkPasswowd() {
+    // This pops up the wittle box!
+    let passwowd = prompt("Please enter the password: ");
+    
+    // This is the secwet password!
+    // (See? Anyone can wead it!)
+    const secwet = "kawaii123"; 
+    
+    if (passwowd == secwet) {
+      // It matches! Yay!~ <3    
+      // This is whewe you wewoute... redirect them!
+      window.location.href = "/math/AlgebraicThinking/KeyAssessments-AlgebraicThinking"; // Change this URL!
+      
+    } else {
+      // Oh no, wwong passwowd! >.<
+      alert("Incorrect Password");
+    }
+  }
+        </script>
     </body>
 </html>

@@ -1,9 +1,32 @@
+body{
+  background-color: #444;
+}
 .reroute{
     margin: auto;
     background-color: #CCC;
     padding: 14px 20px;
     color: #FFF;
     text-align: center;
+}
+
+h2{
+  color: white;
+}
+
+.title{
+    width: 100%;
+    text-align: center;
+    color: white;
+}
+.input{
+    color: white;
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    margin: 0 auto;
+}
+.send {
+    align-self: flex-end;
 }
 
 .main-menu {
